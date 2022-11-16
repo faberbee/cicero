@@ -1,0 +1,105 @@
+namespace com.faberbee.baseTypes
+
+import org.accordproject.cicero.contract.* from https://models.accordproject.org/cicero/contract.cto
+import org.accordproject.cicero.runtime.* from https://models.accordproject.org/cicero/runtime.cto
+import org.accordproject.organization.Organization from https://models.accordproject.org/organization.cto
+import org.accordproject.money.* from https://models.accordproject.org/money.cto
+
+transaction LexecuteResponse extends Response {
+  o String message
+}
+
+transaction LexecuteRequest extends Request {
+  o LexecuteParty party
+}
+
+concept Progress{
+  o Integer completed
+  o Integer steps
+  o String currentState
+  o Boolean aborted optional
+}
+
+participant LexecuteParty extends AccordParty{
+  o String role optional
+  o String organizationId optional
+}
+
+participant DigitalIdentityParty extends LexecuteParty{
+  o String email
+  o String username //Equal to email
+  o String firstName
+  o String lastName
+  o DateTime birthdate
+  o String birthplace
+  o String fiscal_number
+  o String citizenship
+  o String address
+  o String document_number
+  o String document_type
+  o DateTime document_expire_date
+}
+
+participant LexecuteOrganization extends Organization{
+  o String companyEmail optional
+  o String companyVatId optional
+  o String companyFiscalCode optional
+  o String companyElectronicInvoicingCode optional
+  o String commerceChamberPlace optional
+  o String commerceChamberNumber optional
+}
+
+concept LexecutePostalAddress {
+  o String addressLocality
+  o String postalCode
+  o String addressRegion
+  o String streetAddress
+  o String streetNumber
+}
+
+transaction LexecuteCharge extends LexecuteRequest {
+  o ImportoMonetario importoMonetario 
+  o String cro optional
+}
+
+transaction LexecuteConfirmation extends LexecuteRequest {
+  o Boolean confermato
+}
+
+
+asset LexecuteState extends AccordContractState {
+  o Progress progress
+}
+
+
+concept ImportoMonetario {
+  o Double importo
+  o CurrencyCode valuta
+}
+
+transaction LexecuteBalance extends LexecuteResponse {
+  o ImportoMonetario importoResiduo
+  o ImportoMonetario importoPagato
+}
+
+enum LexecuteContractStatus {
+  o WaitingForNextDate
+  o Fulfilled
+}
+
+concept Attachment {
+  o String displayName
+  o AttachmentSignature[] signatures optional
+}
+
+concept Signature {
+  o String id
+  o String displayName
+}
+
+concept AttachmentSignature {
+  o String name
+  o String reason
+  o String reasonTitle
+  o String signerId
+}
